@@ -18,7 +18,7 @@ typedef struct {
 } bitboard;
 
 bool is_occupied(ull position, ull piece) {
-    return !(position & piece);
+    return position & piece;
 }
 
 
