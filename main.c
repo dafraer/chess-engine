@@ -1,28 +1,16 @@
 #include <stdio.h>
 #include <stdbool.h>
-#define ull unsigned long long
-
-typedef struct {
-    ull white_pawn;
-    ull white_king;
-    ull white_queen;
-    ull white_bishop;
-    ull white_knight;
-    ull white_rook;
-    ull black_pawn;
-    ull black_king;
-    ull black_queen;
-    ull black_bishop;
-    ull black_knight;
-    ull black_rook;
-} bitboard;
-
-bool is_occupied(ull position, ull piece) {
-    return position & piece;
-}
-
+#include <string.h>
+#include <stdlib.h>
+#include "engine/engine.h"
+#include "helpers/helpers.h"
+#include "bitboard/bitboard.h"
 
 int main() {
-    printf("Hello");
+    bitboard *b = new_board("fen_pos");
+    engine *e = new_engine(b);
+    run(e);
+    free(e);
     return 0;
 }
+
