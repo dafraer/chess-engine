@@ -11,7 +11,7 @@
 int main() {
     //Set non-blocking I/O for stdin;
     fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
-    bitboard *b = new_board("fen_pos");
+    bitboard *b = new_board();
     engine *e = new_engine(b);
     run(e);
     free(e);

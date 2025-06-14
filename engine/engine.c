@@ -7,6 +7,8 @@
 #include "helpers/helpers.h"
 
 //GUI to engine commands
+#define ON "on"
+#define OFF "off"
 #define STARTPOS "startpos"
 #define UCI "uci"
 #define DEBUG "debug"
@@ -65,6 +67,7 @@ const int MAX_HASH_SIZE = 256;
 //Global variables
 bool debug_mode = false;
 
+//Returns new instance of an engine
 engine* new_engine(bitboard *b) {
     engine *e = malloc(sizeof(engine));
     e->board = b;
@@ -72,40 +75,63 @@ engine* new_engine(bitboard *b) {
     return e;
 }
 
-void process_command(engine *e, char *input) {
-    if (strings_equal(UCI, input)) {
+void process_setoption_cmd(engine *e, char *cmd) {
+
+}
+
+void process_position_cmd(engine *e, char *cmd) {
+    setup_pos(e->board, NULL, NULL, NULL, NULL, 0, 1);
+}
+
+void process_go_cmd(engine *e, char *cmd) {
+    
+}
+
+void process_stop_cmd(engine *e, char *cmd) {
+    
+}
+
+void process_ponderhit_cmd(engine *e, char *cmd) {
+    
+}
+
+void process_debug_cmd(engine *e, char *cmd) {
+
+}
+
+//Processes commands
+void process_cmd(engine *e, char *cmd) {
+    if (starts_with(UCI_NEW_GAME, cmd)){
+        //do nothing *insert chudface*
+    } else if (starts_with(UCI, cmd)) {
         printf(ID, DEFAULT_HASH_SIZE, MIN_HASH_SIZE, MAX_HASH_SIZE);
         printf(UCIOK);
         fflush(stdout);
-    } else if (strings_equal(QUIT, input)) {
+    } else if (starts_with(QUIT, cmd)) {
         exit(0);
-    } else if (strings_equal(SETOPTION, input)) {
-        char *next_input = get_next_token();
-        if (strings_equal(NAME, input)) process_command(e, next_input);
-        free(next_input);    
-    } else if(strings_equal(IS_READY, input)) {
+    } else if (starts_with(SETOPTION, cmd)) {
+        process_setoption_cmd(e, cmd);
+    } else if(starts_with(IS_READY, cmd)) {
         printf("readyok\n");
         fflush(stdout);
-    } else if(strings_equal(NAME, input)) {
-        char *next_input = get_next_token();
-        if (strings_equal(HASH, input)) process_command(e, next_input);
-        free(next_input);
-    } else if (strings_equal(HASH, input)) {
-        char *next_input = get_next_token();
-        if (strings_equal(VALUE, next_input)) process_command(e, next_input);
-        free(next_input);
-    } else if (strings_equal(VALUE, input)) {
-        int mb;
-        scanf("%d", &mb);
-        e->hash_size = mb; 
-    }
+    } else if (starts_with(POSITION, cmd)) {
+        process_position_cmd(e, cmd);
+    } else if (starts_with(GO, cmd)) {
+        process_go_cmd(e, cmd);
+    } else if (starts_with(STOP, cmd)) {
+        process_stop_cmd(e, cmd);
+    } else if (starts_with(PONDERHIT, cmd)) {
+        process_ponderhit_cmd(e, cmd);
+    } else if (starts_with(DEBUG, cmd)) {
+        process_debug_cmd(e, cmd);
+    } 
 }
 
 void run(engine *e) { 
     while (true) {
-        char *input = get_next_token();
+        char *input = get_next_cmd();
         if (!input) continue;
-        process_command(e, input);
+        process_cmd(e, input);
         free(input);
     } 
 }

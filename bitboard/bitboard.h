@@ -17,5 +17,6 @@ typedef struct {
 } bitboard;
 
 bool is_occupied(ull position, ull piece);
-bitboard* new_board(char* fen_pos);
+bitboard* new_board();
+void setup_pos(bitboard *b, char *fen_pos, char *side_to_move, char *castling, char *enpassant_square, int half_move_clock, int move_num);
 #endif
