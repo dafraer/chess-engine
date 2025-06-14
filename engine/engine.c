@@ -12,6 +12,9 @@
 #define DEBUG "debug"
 #define IS_READY "isready"
 #define SET "set"
+#define SETOPTION "setoption"
+#define VALUE "value"
+#define HASH "Hash"
 #define OPTION "option"
 #define NAME "name"
 #define REGISTER "register" 
@@ -65,17 +68,46 @@ bool debug_mode = false;
 engine* new_engine(bitboard *b) {
     engine *e = malloc(sizeof(engine));
     e->board = b;
+    e->hash_size = MIN_HASH_SIZE;
     return e;
 }
 
-void run(engine *e) {
-    char input[1024];
+void process_command(engine *e, char *input) {
+    if (strings_equal(UCI, input)) {
+        printf(ID, DEFAULT_HASH_SIZE, MIN_HASH_SIZE, MAX_HASH_SIZE);
+        printf(UCIOK);
+        fflush(stdout);
+    } else if (strings_equal(QUIT, input)) {
+        exit(0);
+    } else if (strings_equal(SETOPTION, input)) {
+        char *next_input = get_next_token();
+        if (strings_equal(NAME, input)) process_command(e, next_input);
+        free(next_input);    
+    } else if(strings_equal(IS_READY, input)) {
+        printf("readyok\n");
+        fflush(stdout);
+    } else if(strings_equal(NAME, input)) {
+        char *next_input = get_next_token();
+        if (strings_equal(HASH, input)) process_command(e, next_input);
+        free(next_input);
+    } else if (strings_equal(HASH, input)) {
+        char *next_input = get_next_token();
+        if (strings_equal(VALUE, next_input)) process_command(e, next_input);
+        free(next_input);
+    } else if (strings_equal(VALUE, input)) {
+        int mb;
+        scanf("%d", &mb);
+        printf("%d\n", mb);
+        e->hash_size = mb; 
+    }
+}
+
+void run(engine *e) { 
     while (true) {
-        scanf("%128s", input);
-        if (starts_with(UCI, input)) {
-            printf(ID, DEFAULT_HASH_SIZE, MIN_HASH_SIZE, MAX_HASH_SIZE);
-            printf(UCIOK);
-            fflush(stdout);
-        }
+        char *input = get_next_token();
+        if (!input) continue;
+        process_command(e, input);
+        free(input);
     } 
 }
+

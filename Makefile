@@ -5,5 +5,5 @@ build:
 run:
 	gcc -I. -o engine-out main.c ./engine/engine.c ./helpers/helpers.c ./bitboard/bitboard.c 
 	./engine-out
-clean:
+clear:
 	rm engine-out
