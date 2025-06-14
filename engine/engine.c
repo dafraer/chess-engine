@@ -48,7 +48,7 @@
 #define READYOK "readyok\n"
 #define BESTMOVE "bestmove"
 #define INFO "info"
-#define SELDEPTH "seldepth"
+#define SELDEPTH "setdepth"
 #define TIME "time"
 #define NODES "nodes"
 #define PV "pv"
@@ -75,8 +75,16 @@ engine* new_engine(bitboard *b) {
     return e;
 }
 
-void process_setoption_cmd(engine *e, char *cmd) {
 
+//Processes setoption command
+//Only supports hash option
+void process_setoption_cmd(engine *e, char *cmd) {
+    char* token = strtok(cmd, " \t");
+    token = strtok(NULL, " \t");
+    if (token && strings_equal(token, NAME)) token = strtok(NULL, " \t");
+    if (token && strings_equal(token, HASH)) token = strtok(NULL, " \t");
+    if (token && strings_equal(token, VALUE)) token = strtok(NULL, " \t");
+    if (token) e->hash_size = max(atoi(token), MIN_HASH_SIZE);
 }
 
 void process_position_cmd(engine *e, char *cmd) {
@@ -84,7 +92,7 @@ void process_position_cmd(engine *e, char *cmd) {
 }
 
 void process_go_cmd(engine *e, char *cmd) {
-    
+
 }
 
 void process_stop_cmd(engine *e, char *cmd) {
@@ -92,11 +100,18 @@ void process_stop_cmd(engine *e, char *cmd) {
 }
 
 void process_ponderhit_cmd(engine *e, char *cmd) {
-    
+
 }
 
 void process_debug_cmd(engine *e, char *cmd) {
-
+    char* token = strtok(cmd, " \t");
+    token = strtok(NULL, " \t");
+    if (token) {
+        if (strings_equal("on", token)) {
+            debug_mode = true;
+        }
+        if (strings_equal("off", token)) debug_mode = false;
+    }
 }
 
 //Processes commands
@@ -133,6 +148,6 @@ void run(engine *e) {
         if (!input) continue;
         process_cmd(e, input);
         free(input);
-    } 
+    }   
 }
 
