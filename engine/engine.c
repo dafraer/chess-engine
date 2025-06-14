@@ -97,7 +97,6 @@ void process_command(engine *e, char *input) {
     } else if (strings_equal(VALUE, input)) {
         int mb;
         scanf("%d", &mb);
-        printf("%d\n", mb);
         e->hash_size = mb; 
     }
 }
