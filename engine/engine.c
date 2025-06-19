@@ -84,11 +84,44 @@ void process_setoption_cmd(engine *e, char *cmd) {
     if (token && strings_equal(token, NAME)) token = strtok(NULL, " \t");
     if (token && strings_equal(token, HASH)) token = strtok(NULL, " \t");
     if (token && strings_equal(token, VALUE)) token = strtok(NULL, " \t");
-    if (token) e->hash_size = max(atoi(token), MIN_HASH_SIZE);
+    if (token) e->hash_size = min(max(atoi(token), MIN_HASH_SIZE), MAX_HASH_SIZE);
 }
 
 void process_position_cmd(engine *e, char *cmd) {
-    setup_pos(e->board, NULL, NULL, NULL, NULL, 0, 1);
+    char* token = strtok(cmd, " \t");
+    token = strtok(NULL, " \t");
+    if (strings_equal(token, STARTPOS)) {
+        setup_pos(e->board, NULL, NULL, NULL, NULL, 0, 1);
+        return;
+    }
+    if (strings_equal(token, FEN)) {
+        char *fen_pos, *side_to_move, *castling_availability, *enpassant_square;
+        int half_move_clock = 0;
+        int move_num = 1;
+        //handle errors if strtok return nil TODO
+        fen_pos = strtok(NULL, " \t");
+        if (fen_pos == NULL) return;
+        side_to_move = strtok(NULL, " \t");
+        if (side_to_move == NULL) return;
+        castling_availability = strtok(NULL, " \t");
+        if (castling_availability == NULL) return;
+        enpassant_square = strtok(NULL, " \t");
+        if (enpassant_square == NULL) return;
+        token = strtok(NULL, " \t");
+        if (token) half_move_clock = atoi(token);
+        token = strtok(NULL, " \t");
+        if (token) move_num = atoi(token);
+        setup_pos(e->board, fen_pos, side_to_move, castling_availability, enpassant_square, half_move_clock, move_num);
+        token = strtok(NULL, " \t");
+        if (strings_equal(token, MOVES)) {
+            // process moves
+            token = strtok(NULL, " \t");
+            while (token) {
+                //process each move
+                token = strtok(NULL, " \t");
+            }
+        }
+    }
 }
 
 void process_go_cmd(engine *e, char *cmd) {
