@@ -101,24 +101,31 @@ void process_position_cmd(engine *e, char *cmd) {
         //handle errors if strtok return nil TODO
         fen_pos = strtok(NULL, " \t");
         if (fen_pos == NULL) return;
+
         side_to_move = strtok(NULL, " \t");
         if (side_to_move == NULL) return;
+
         castling_availability = strtok(NULL, " \t");
         if (castling_availability == NULL) return;
+
         enpassant_square = strtok(NULL, " \t");
         if (enpassant_square == NULL) return;
+        
         token = strtok(NULL, " \t");
         if (token) half_move_clock = atoi(token);
+        
         token = strtok(NULL, " \t");
         if (token) move_num = atoi(token);
+        
         setup_pos(e->board, fen_pos, side_to_move, castling_availability, enpassant_square, half_move_clock, move_num);
+        
         token = strtok(NULL, " \t");
         if (strings_equal(token, MOVES)) {
             // process moves
             token = strtok(NULL, " \t");
             while (token) {
                 //process each move
-                token = strtok(NULL, " \t");
+                 token = strtok(NULL, " \t");
             }
         }
     }
